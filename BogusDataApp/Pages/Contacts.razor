@@ -1,0 +1,80 @@
+﻿@page "/contacts"
+@using CsvHelper;
+@using System.Globalization;
+@inject DataGenerator data
+
+<h3>Contacts</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <th>FirstName</th>
+            <th>MiddleName</th>
+            <th>LastName</th>
+            <th>NickName</th>
+            <th>Title</th>
+            <th>Birthday</th>
+            <th>Email</th>
+            <th>PhoneNumber</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>ZipCode</th>
+            <th>Country</th>
+            <th>Website</th>
+            <th>Notes</th>
+            <th>Picture</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in contacts)
+        {
+            <tr>
+                <td>@c.Id</td>
+                <td>@c.FirstName</td>
+                <td>@c.MiddleName</td>
+                <td>@c.LastName</td>
+                <td>@c.NickName</td>
+                <td>@c.Title</td>
+                <td>@c.Birthday</td>
+                <td>@c.Email</td>
+                <td>@c.PhoneNumber</td>
+                <td>@c.Street</td>
+                <td>@c.City</td>
+                <td>@c.State</td>
+                <td>@c.ZipCode</td>
+                <td>@c.Country</td>
+                <td>@c.Website</td>
+                <td>@c.Notes</td>
+                <td>@c.Picture</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button type="button" class=" = btn btn-outline-primary" @onclick = "LoadData">
+    Load More Data
+</button>
+
+
+
+@code {
+    List<ContactModel> contacts = new();
+
+    private void LoadData()
+    {
+        var results = data.GenerateContacts().Take(50);
+        contacts.AddRange(results);
+        WriteToCsv(contacts);
+    }
+
+    private void WriteToCsv(List<ContactModel> contacts )
+    {
+        using (var writer = new StreamWriter(@"C:\Users\POBOYINSAMSARA\Desktop\contacts2.csv"))
+        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        {
+            csv.WriteRecords(contacts);
+        }
+    }
+}
